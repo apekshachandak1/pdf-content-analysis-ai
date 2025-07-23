@@ -1,10 +1,10 @@
-# 📄 PDF Content Analysis using Python
+# PDF Content Analysis using Python
 
 This project extracts text and images from an educational PDF and stores the data in a structured JSON format. It is part of an AI/Python internship assignment.
 
 ---
 
-## 🔧 Features
+## Features
 
 - Extracts text from each page of the PDF
 - Extracts and saves images from each page
@@ -12,7 +12,7 @@ This project extracts text and images from an educational PDF and stores the dat
 
 ---
 
-## 📁 Files & Folders
+## Files & Folders
 
 ```
 
@@ -28,7 +28,7 @@ pdf-content-analysis-ai/
 
 ---
 
-## ▶️ How to Run
+##  How to Run
 
 1. ✅ Install the required library:
 ```bash
