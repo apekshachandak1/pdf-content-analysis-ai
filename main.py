@@ -3,10 +3,10 @@ import os
 import json
 
 # Input PDF file
-pdf_file = r"C:\PYTHON\PDF Content Analysis\IMO class 1 Maths Olympiad Sample Paper 1 for the year 2024-25.pdf"
+pdf_file = r"input.pdf"
 
-# Create output image folder
-image_folder = r"C:\PYTHON\PDF Content Analysis\images"
+# output image folder
+image_folder = r"path/to/images/folder"
 os.makedirs(image_folder, exist_ok=True)
 
 # Open PDF
@@ -34,8 +34,6 @@ for page_number in range(len(doc)):
             img_file.write(image_bytes)
         img_paths.append(img_path)
 
-    # For simplicity, assuming all images on page are question images and options
-    # You can improve this based on coordinates or image size
     question_img = img_paths[0] if len(img_paths) >= 1 else ""
     option_imgs = img_paths[1:] if len(img_paths) > 1 else []
 
