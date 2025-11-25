@@ -1,10 +1,15 @@
-name: PDF Content Analysis – Build & Test
+name: PDF Content Analysis – Build, Test & SonarQube
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
+env:
+  PYTHON_VERSION: "3.10"
+  SONAR_PROJECT_KEY: "pdf-content-analysis-ai"    # 🔁 change if you use a different key in SonarQube
+  SONAR_PROJECT_NAME: "pdf-content-analysis-ai"   # 🔁 optional: prettier display name in SonarQube
 
 jobs:
   build:
@@ -17,7 +22,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Cache pip
         uses: actions/cache@v4
@@ -47,7 +52,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Cache pip
         uses: actions/cache@v4
@@ -92,3 +97,33 @@ jobs:
           fi
 
           echo "output.json exists and is not empty."
+
+  sonarqube:
+    name: SonarQube Scan
+    needs: [build, test]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java (required for SonarQube scanner)
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      # If your SonarQube server uses GitHub login / PR decoration,
+      # you don't need extra checkout or auth here beyond the token & URL.
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}           # 🔐 set in GitHub repo settings
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}     # 🔐 e.g. https://sonar.yourdomain.com or https://sonarcloud.io
+        with:
+          args: >
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+            -Dsonar.projectName=${{ env.SONAR_PROJECT_NAME }}
+            -Dsonar.python.version=${{ env.PYTHON_VERSION }}
+            -Dsonar.sources=.
+            -Dsonar.exclusions=**/tests/**,**/*.json,**/*.pdf
